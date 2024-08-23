@@ -31,16 +31,38 @@ const showChosenLetter = (e) => {
 	currentPos++;
 };
 
+const checkLetterPositions = () => {
+	for (let i = 0; i < currentWord.length; i++) {
+		if (winningWord[i] === currentWord[i].toLowerCase()) {
+			// good letter in good position
+			tries === 1
+				? panes[i].classList.add('good')
+				: panes[currentPos - 5 + i].classList.add('good');
+		} else if (winningWord.includes(currentWord[i].toLowerCase())) {
+			// good letter in wrong position
+			tries === 1
+				? panes[i].classList.add('inWord')
+				: panes[currentPos - 5 + i].classList.add('inWord');
+		} else {
+			// letter not in the word
+			tries === 1
+				? panes[i].classList.add('notInWord')
+				: panes[currentPos - 5 + i].classList.add('notInWord');
+		}
+	}
+};
+
 const checkWord = () => {
 	if (currentWord.length < 5) return;
+	tries++;
+	checkLetterPositions();
 	if (currentWord.toLowerCase() === winningWord) {
 		alert('You won!');
 		return;
 	}
 
-	tries++;
 	currentWord = '';
-	if (tries > 6) {
+	if (tries >= 6) {
 		alert('You lost!');
 		return;
 	}
