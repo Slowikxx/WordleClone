@@ -35,19 +35,31 @@ const checkLetterPositions = () => {
 	for (let i = 0; i < currentWord.length; i++) {
 		if (winningWord[i] === currentWord[i].toLowerCase()) {
 			// good letter in good position
-			tries === 1
-				? panes[i].classList.add('good')
-				: panes[currentPos - 5 + i].classList.add('good');
+			if (tries === 1) {
+				flipPane(panes[i]);
+				panes[i].classList.add('good');
+			} else {
+				flipPane(panes[currentPos - 5 + i]);
+				panes[currentPos - 5 + i].classList.add('good');
+			}
 		} else if (winningWord.includes(currentWord[i].toLowerCase())) {
 			// good letter in wrong position
-			tries === 1
-				? panes[i].classList.add('inWord')
-				: panes[currentPos - 5 + i].classList.add('inWord');
+			if (tries === 1) {
+				flipPane(panes[i]);
+				panes[i].classList.add('inWord');
+			} else {
+				flipPane(panes[currentPos - 5 + i]);
+				panes[currentPos - 5 + i].classList.add('inWord');
+			}
 		} else {
 			// letter not in the word
-			tries === 1
-				? panes[i].classList.add('notInWord')
-				: panes[currentPos - 5 + i].classList.add('notInWord');
+			if (tries === 1) {
+				flipPane(panes[i]);
+				panes[i].classList.add('notInWord');
+			} else {
+				flipPane(panes[currentPos - 5 + i]);
+				panes[currentPos - 5 + i].classList.add('notInWord');
+			}
 		}
 	}
 };
@@ -74,6 +86,10 @@ const deletePreviousLetter = () => {
 	currentPos--;
 	panes[currentPos].innerHTML = '';
 	currentWord = currentWord.slice(0, -1);
+};
+
+const flipPane = (pane) => {
+	pane.style = 'transform: rotateY(-360deg)';
 };
 
 keys.forEach((key) => {
