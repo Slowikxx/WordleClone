@@ -20,6 +20,11 @@ const startGame = () => {
 	currentWord = '';
 	tries = 0;
 	currentPos = 0;
+	panes.forEach((pane) => {
+		pane.innerHTML = '';
+		pane.classList.remove('good', 'inWord', 'notInWord');
+		pane.style = 'transform: rotateY(0deg)';
+	});
 	console.log(winningWord);
 };
 
