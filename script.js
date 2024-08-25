@@ -2,8 +2,12 @@ const keys = document.querySelectorAll('.key');
 const panes = document.querySelectorAll('.pane');
 const enterBtn = document.querySelector('.enter');
 const deleteBtn = document.querySelector('.delete');
+const endGameScreen = document.querySelector('.endGameScreen');
+const score = document.querySelector('.score');
+const newGameBtn = document.querySelector('.newGame');
 
 const words = ['which', 'there', 'their', 'about', 'would', 'these'];
+
 const randomizeWinningWord = () => {
 	return words[Math.floor(Math.random() * words.length)];
 };
@@ -14,6 +18,7 @@ let currentWord = '';
 let winningWord = '';
 let tries = 0;
 let currentPos = 0;
+let isGameOver = false;
 
 const startGame = () => {
 	winningWord = randomizeWinningWord();
@@ -25,12 +30,13 @@ const startGame = () => {
 		pane.classList.remove('good', 'inWord', 'notInWord');
 		pane.style = 'transform: rotateY(0deg)';
 	});
-	console.log(winningWord);
+	isGameOver = false;
+	endGameScreen.style = 'display: none';
 };
 
 const showChosenLetter = (e) => {
 	if (currentWord.length >= 5) return;
-	const letter = e.target.innerHTML;
+	const letter = e.key ? e.key.toUpperCase() : e.target.innerHTML;
 	currentWord += letter;
 	panes[currentPos].innerHTML = letter;
 	currentPos++;
@@ -74,13 +80,17 @@ const checkWord = () => {
 	tries++;
 	checkLetterPositions();
 	if (currentWord.toLowerCase() === winningWord) {
-		alert('You won!');
+		isGameOver = true;
+		endGameScreen.style = 'display: flex';
+		score.innerHTML = `You won in <span class="scoreMsg">${tries} </span>tries!`;
 		return;
 	}
 
 	currentWord = '';
 	if (tries >= 6) {
-		alert('You lost!');
+		isGameOver = true;
+		endGameScreen.style = 'display: flex';
+		score.innerHTML = `You lost! The word was <span class="scoreMsg">${winningWord}</span>.`;
 		return;
 	}
 };
@@ -103,5 +113,19 @@ keys.forEach((key) => {
 
 enterBtn.addEventListener('click', checkWord);
 deleteBtn.addEventListener('click', deletePreviousLetter);
+
+newGameBtn.addEventListener('click', () => {
+	startGame();
+});
+
+document.addEventListener('keydown', (e) => {
+	if (e.key === 'Enter' && !isGameOver) {
+		checkWord();
+	} else if (e.key === 'Backspace' && !isGameOver) {
+		deletePreviousLetter();
+	} else if (e.key >= 'a' && e.key <= 'z') {
+		showChosenLetter(e);
+	}
+});
 
 startGame();
